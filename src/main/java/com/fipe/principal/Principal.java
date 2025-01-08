@@ -20,16 +20,18 @@ public class Principal {
 
         //Verifica se a pessoa escolheu um numero
             //se não deixa oque ela escreveu
-        if (opcao.equals(1)){
+        if (opcao.equals("1")){
             opcao = "carros";
-        } else if (opcao.equals(2)) {
+        } else if (opcao.equals("2")) {
             opcao = "motos";
-        } else if (opcao.equals(3)) {
+        } else if (opcao.equals("3")) {
             opcao = "caminhoes";
         }
-        api = opcao+"/marcas";
+        api = api+opcao+"/marcas";
+
         System.out.println(api);
         String json = consumoApi.consumo(api);
-        System.out.println(json);
+
+
     }
 }
