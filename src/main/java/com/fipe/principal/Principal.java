@@ -1,13 +1,21 @@
 package com.fipe.principal;
 
+import com.fipe.models.Dados;
+import com.fipe.models.Modelo;
 import com.fipe.service.ConsumoApi;
+import com.fipe.service.ConverteDado;
 
+import javax.swing.text.html.parser.Parser;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Scanner;
 
 public class Principal {
+
     private Scanner scanner = new Scanner(System.in);
     private String api = "https://parallelum.com.br/fipe/api/v1/";
     private ConsumoApi consumoApi = new ConsumoApi();
+    private ConverteDado converte = new ConverteDado();
 
     public void exibeMenu() {
         System.out.println("""
@@ -32,6 +40,21 @@ public class Principal {
         System.out.println(api);
         String json = consumoApi.consumo(api);
 
+        List<Dados> dado = converte.converteDadoLista(json, Dados.class);
+
+        dado.stream()
+                .sorted(Comparator.comparing(Dados::codigo).reversed())
+                .forEach(System.out::println);
+
+        System.out.println("Digite o Código da Marca: ");
+        opcao = scanner.nextLine();
+
+        api = api+"/"+opcao+"/modelos";
+        json = consumoApi.consumo(api);
+        System.out.println(json);
+        Modelo modelo = converte.converteDado(json, Modelo.class);
+
+        modelo.modelo().stream().forEach(System.out::println);
 
     }
 }
