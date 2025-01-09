@@ -7,9 +7,11 @@ import com.fipe.service.ConsumoApi;
 import com.fipe.service.ConverteDado;
 
 import javax.swing.text.html.parser.Parser;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Principal {
 
@@ -28,7 +30,7 @@ public class Principal {
         var opcao = scanner.nextLine();
 
         //Verifica se a pessoa escolheu um numero
-            //se não deixa oque ela escreveu
+        //se não deixa oque ela escreveu
         if (opcao.equals("1")){
             opcao = "carros";
         } else if (opcao.equals("2")) {
@@ -47,7 +49,7 @@ public class Principal {
                 .sorted(Comparator.comparing(Dados::codigo).reversed())
                 .forEach(System.out::println);
 
-        System.out.println("Digite o Código da Marca: ");
+        System.out.println("\nDigite o Código da Marca: ");
         opcao = scanner.nextLine();
 
         api = api+"/"+opcao+"/modelos";
@@ -60,7 +62,12 @@ public class Principal {
 
         modelo.modelo().stream().forEach(System.out::println);
 
-        System.out.println("Digite o Código do Modelo: ");
+        System.out.println("\nDigite o nome do modelo");
+        String nomeModelo = scanner.nextLine();
+        modelo.modelo().stream().filter(n -> n.nome().toLowerCase().contains(nomeModelo.toLowerCase()))
+                .forEach(System.out::println);
+
+        System.out.println("\nDigite o Código do Modelo: ");
         opcao = scanner.nextLine();
 
         api = api+"/"+opcao+"/anos";
@@ -71,20 +78,19 @@ public class Principal {
 
         List<Dados> anoList = converte.converteDadoLista(json, Dados.class);
 
-        anoList.stream().forEach(System.out::println);
+        List<Carro> carros = new ArrayList<>();
 
-        System.out.println("Digite o Ano: ");
-        opcao = scanner.nextLine();
+        for (int i = 0; i < anoList.size(); i++) {
 
-        api = api+"/"+opcao;
-        System.out.println(api);
-        json = consumoApi.consumo(api);
+            String newAPi = api+"/"+anoList.get(i).codigo();
 
-        System.out.println(json);
+            json = consumoApi.consumo(newAPi);
+            Carro carro = converte.converteDado(json,Carro.class);
 
-        Carro carro = converte.converteDado(json, Carro.class);
+            carros.add(carro);
+        }
 
-        System.out.println(carro);
+        carros.stream().forEach(System.out::println);
 
     }
 }
