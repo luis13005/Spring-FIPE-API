@@ -1,5 +1,6 @@
 package com.fipe.principal;
 
+import com.fipe.models.Carro;
 import com.fipe.models.Dados;
 import com.fipe.models.Modelo;
 import com.fipe.service.ConsumoApi;
@@ -50,11 +51,40 @@ public class Principal {
         opcao = scanner.nextLine();
 
         api = api+"/"+opcao+"/modelos";
+
         json = consumoApi.consumo(api);
-        System.out.println(json);
+
         Modelo modelo = converte.converteDado(json, Modelo.class);
 
+        System.out.println(modelo);
+
         modelo.modelo().stream().forEach(System.out::println);
+
+        System.out.println("Digite o Código do Modelo: ");
+        opcao = scanner.nextLine();
+
+        api = api+"/"+opcao+"/anos";
+        System.out.println(api);
+
+        json = consumoApi.consumo(api);
+        System.out.println(json);
+
+        List<Dados> anoList = converte.converteDadoLista(json, Dados.class);
+
+        anoList.stream().forEach(System.out::println);
+
+        System.out.println("Digite o Ano: ");
+        opcao = scanner.nextLine();
+
+        api = api+"/"+opcao;
+        System.out.println(api);
+        json = consumoApi.consumo(api);
+
+        System.out.println(json);
+
+        Carro carro = converte.converteDado(json, Carro.class);
+
+        System.out.println(carro);
 
     }
 }
